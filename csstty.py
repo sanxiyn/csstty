@@ -50,6 +50,14 @@ class StyleRenderer(object):
         self.load_style(element.text)
 
 class Renderer(StyleRenderer):
+    def style_to_attrs(self, style):
+        attrs = []
+        for name in style:
+            value = style[name]
+            if name == 'text-decoration':
+                if value == 'underline':
+                    attrs.append('underline')
+        return attrs
     def start_element(self, element, style):
         display = style.get('display')
         if not display:
@@ -60,16 +68,18 @@ class Renderer(StyleRenderer):
                 tail = element.tail.strip() or ' '
                 print(tail, end='')
         elif display == 'block':
-            print(element.text)
+            attrs = self.style_to_attrs(style)
+            termcolor.cprint(element.text, attrs=attrs)
     def end_element(self, element, style):
         display = style.get('display')
         if not display:
             return
         if display == 'block':
-            print()
+            termcolor.cprint('')
 
 DEFAULT_STYLESHEET = '''
 p { display: block; }
+div { display: block; }
 '''
 
 import sys
