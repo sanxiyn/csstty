@@ -4,10 +4,11 @@ cssselect.py is a patched version of
 [lxml.cssselect](http://lxml.de/cssselect.html) to handle a default
 namespace.
 
-# Running CSS Test Suite
+## Running CSS Test Suite
 
 There is an official W3C [CSS Test Suite](http://test.csswg.org/).
 You can get it with [Mercurial](http://mercurial.selenic.com/).
+Be warned that the suite is pretty big: it weighs more than 300 MB.
 
     hg clone http://hg.csswg.org/test/
     ln -s test/approved/css2.1/src css21
