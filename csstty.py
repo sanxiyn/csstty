@@ -62,6 +62,7 @@ class Renderer(StyleRenderer):
             'fuchsia': 'magenta',
             'aqua': 'cyan',
             'white': 'white',
+            'black': 'grey',
         }
         return table.get(color)
     def style_to_termcolor(self, style):
@@ -76,6 +77,10 @@ class Renderer(StyleRenderer):
                 value = self.color_to_termcolor(value)
                 if value:
                     result['color'] = value
+            elif name == 'background-color':
+                value = self.color_to_termcolor(value)
+                if value:
+                    result['on_color'] = 'on_' + value
         if attrs:
             result['attrs'] = attrs
         return result
@@ -86,12 +91,14 @@ class Renderer(StyleRenderer):
         style = self.style_to_termcolor(style)
         styled_print = functools.partial(termcolor.cprint, **style)
         if display == 'inline':
-            styled_print(element.text, end='')
+            if element.text:
+                styled_print(element.text, end='')
             if element.tail:
                 tail = element.tail.strip() or ' '
                 print(tail, end='')
         elif display == 'block':
-            styled_print(element.text)
+            if element.text:
+                styled_print(element.text)
     def end_element(self, element, style):
         display = style.get('display')
         if not display:
