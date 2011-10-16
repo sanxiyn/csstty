@@ -1,7 +1,13 @@
 # csstty
 
-cssselect.py is a patched version of
-[lxml.cssselect](http://lxml.de/cssselect.html) to handle a default
+csstty is a CSS implementation for tty media written in
+[Python](www.python.org/). It uses
+[html5lib](http://code.google.com/p/html5lib/) to parse HTML,
+[cssutils](http://cthedot.de/cssutils/) to parse CSS,
+[lxml.cssselect](http://lxml.de/cssselect.html) to apply CSS,
+and [termcolor](http://pypi.python.org/pypi/termcolor) for rendering.
+
+cssselect.py is a patched version of lxml.cssselect to handle a default
 namespace.
 
 ## Running CSS Test Suite
