@@ -1,5 +1,7 @@
 from __future__ import print_function
 
+import functools
+
 import html5lib
 import cssutils
 # A patched version of lxml.cssselect to handle a default namespace
@@ -50,26 +52,46 @@ class StyleRenderer(object):
         self.load_style(element.text)
 
 class Renderer(StyleRenderer):
-    def style_to_attrs(self, style):
+    def color_to_termcolor(self, color):
+        table = {
+            'gray': 'grey',
+            'red': 'red',
+            'green': 'green',
+            'yellow': 'yellow',
+            'blue': 'blue',
+            'fuchsia': 'magenta',
+            'aqua': 'cyan',
+            'white': 'white',
+        }
+        return table.get(color)
+    def style_to_termcolor(self, style):
+        result = {}
         attrs = []
         for name in style:
             value = style[name]
             if name == 'text-decoration':
                 if value == 'underline':
                     attrs.append('underline')
-        return attrs
+            elif name == 'color':
+                value = self.color_to_termcolor(value)
+                if value:
+                    result['color'] = value
+        if attrs:
+            result['attrs'] = attrs
+        return result
     def start_element(self, element, style):
         display = style.get('display')
         if not display:
             return
+        style = self.style_to_termcolor(style)
+        styled_print = functools.partial(termcolor.cprint, **style)
         if display == 'inline':
-            print(element.text, end='')
+            styled_print(element.text, end='')
             if element.tail:
                 tail = element.tail.strip() or ' '
                 print(tail, end='')
         elif display == 'block':
-            attrs = self.style_to_attrs(style)
-            termcolor.cprint(element.text, attrs=attrs)
+            styled_print(element.text)
     def end_element(self, element, style):
         display = style.get('display')
         if not display:
